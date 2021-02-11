@@ -1,11 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-import           Data.List                     (sort)
-import           Test.Hspec
+import Data.List (sort)
+import Test.Hspec
 
-import qualified Data.ByteString               as BS
+import qualified Data.ByteString as BS
 import qualified System.Posix.Files.ByteString as Posix
-import qualified System.Posix.Recursive        as Lib
+import qualified System.Posix.Recursive as Lib
 
 
 main :: IO ()
