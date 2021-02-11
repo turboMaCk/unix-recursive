@@ -3,7 +3,6 @@
 module System.Posix.Recursive (list) where
 
 import Control.Exception (bracket)
-import Data.ByteString (ByteString)
 import qualified Data.ByteString as BS
 import System.Posix.ByteString.FilePath (RawFilePath)
 import qualified System.Posix.Directory.ByteString as Posix
