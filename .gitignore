@@ -1,2 +1,5 @@
 .stack-work/
 *~
+
+# Test files that need to be created by script
+/test/workdir/only-roots-dir1
