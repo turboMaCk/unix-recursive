@@ -11,5 +11,5 @@ import qualified System.Posix.Recursive as Lib
 main :: IO ()
 main = do
     [path] <- getArgs
-    !all <- Lib.list $ BS.fromString path
+    !all <- Lib.listEverything $ BS.fromString path
     print $ length all

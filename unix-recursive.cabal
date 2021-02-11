@@ -35,7 +35,7 @@ library
     , bytestring
   default-language: Haskell2010
 
-executable watch-fs-hs-exe
+executable unix-recursive-exe
   main-is: Main.hs
   other-modules:
       Paths_unix_recursive
@@ -48,7 +48,7 @@ executable watch-fs-hs-exe
     , utf8-string
   default-language: Haskell2010
 
-test-suite watch-fs-hs-test
+test-suite unix-recursive-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
@@ -59,4 +59,7 @@ test-suite watch-fs-hs-test
   build-depends:
       base >=4.7 && <5
     , unix-recursive
+    , hspec
+    , bytestring
+    , unix
   default-language: Haskell2010
