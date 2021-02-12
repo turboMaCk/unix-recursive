@@ -6,14 +6,11 @@ module System.Posix.Recursive (
     Conf (..),
     defConf,
     listAll,
-    followListAll,
     listEverything,
-    followListEverything,
     listAccessible,
     listDirectories,
     listRegularFiles,
     listEverythingAccessible,
-    listSymbolicLinks,
 ) where
 
 import Control.Exception (bracket, handle)
@@ -26,11 +23,11 @@ import qualified System.Posix.Directory.ByteString as Posix
 import qualified System.Posix.Files.ByteString as Posix
 
 
-listAll' :: Bool -> (RawFilePath -> Bool) -> ([RawFilePath] -> [RawFilePath]) -> [RawFilePath] -> IO [RawFilePath]
-listAll' _ _ acc [] = pure $ acc []
-listAll' followSymlinks predicate acc (path : rest) =
-    handle (\(_ :: IOError) -> listAll' followSymlinks predicate acc rest) $ do
-        file <- getFileStatus path
+listAll' :: (RawFilePath -> Bool) -> ([RawFilePath] -> [RawFilePath]) -> [RawFilePath] -> IO [RawFilePath]
+listAll' _ acc [] = pure $ acc []
+listAll' predicate acc (path : rest) =
+    handle (\(_ :: IOError) -> listAll' predicate acc rest) $ do
+        file <- Posix.getFileStatus path
         if Posix.isDirectory file
             then do
                 (newRest, newAcc) <-
@@ -38,14 +35,9 @@ listAll' followSymlinks predicate acc (path : rest) =
                         (Posix.openDirStream path)
                         Posix.closeDirStream
                         start
-                listAll' followSymlinks predicate newAcc newRest
-            else listAll' followSymlinks predicate acc rest
+                listAll' predicate newAcc newRest
+            else listAll' predicate acc rest
   where
-    {-# INLINE getFileStatus #-}
-    getFileStatus
-        | followSymlinks = Posix.getFileStatus
-        | otherwise = Posix.getSymbolicLinkStatus
-
     {-# INLINE start #-}
     start dirp = go acc rest
       where
@@ -66,26 +58,14 @@ listAll' followSymlinks predicate acc (path : rest) =
 
 listAll :: (RawFilePath -> Bool) -> RawFilePath -> IO [RawFilePath]
 listAll pred path =
-    listAll' False pred (path :) [path]
+    listAll' pred (path :) [path]
 {-# INLINE listAll #-}
-
-
-followListAll :: (RawFilePath -> Bool) -> RawFilePath -> IO [RawFilePath]
-followListAll pred path =
-    listAll' True pred (path :) [path]
-{-# INLINE followListAll #-}
 
 
 listEverything :: RawFilePath -> IO [RawFilePath]
 listEverything =
     listAll (const True)
 {-# INLINE listEverything #-}
-
-
-followListEverything :: RawFilePath -> IO [RawFilePath]
-followListEverything =
-    followListAll (const True)
-{-# INLINE followListEverything #-}
 
 
 data Conf = Conf
@@ -100,7 +80,7 @@ defConf =
     Conf
         { preCheck = const True
         , postCheck = \_ _ -> True
-        , followSymlinks = False
+        , followSymlinks = True
         }
 
 
@@ -168,9 +148,3 @@ listRegularFiles :: RawFilePath -> IO [RawFilePath]
 listRegularFiles =
     listAccessible defConf{postCheck = \file _ -> Posix.isRegularFile file}
 {-# INLINE listRegularFiles #-}
-
-
-listSymbolicLinks :: RawFilePath -> IO [RawFilePath]
-listSymbolicLinks =
-    listAccessible defConf{postCheck = \file _ -> Posix.isSymbolicLink file}
-{-# INLINE listSymbolicLinks #-}
