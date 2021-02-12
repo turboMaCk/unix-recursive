@@ -2,7 +2,7 @@
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module System.Posix.Recursive (
+module System.Posix.Recursive.ByteString (
     Conf (..),
     defConf,
     listAll,

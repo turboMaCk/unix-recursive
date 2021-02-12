@@ -5,7 +5,7 @@ module Main where
 
 import System.Environment
 import qualified Data.ByteString.UTF8 as BS
-import qualified System.Posix.Recursive as Lib
+import qualified System.Posix.Recursive.ByteString as Lib
 
 
 main :: IO ()
