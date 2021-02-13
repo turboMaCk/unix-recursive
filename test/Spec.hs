@@ -1,8 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 import Data.List (sort)
-import Test.Hspec (hspec)
 import Spec.ByteString as ByteString
+import Test.Hspec (hspec)
 
 
 main :: IO ()

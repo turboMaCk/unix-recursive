@@ -25,6 +25,7 @@ source-repository head
 library
   exposed-modules:
       System.Posix.Recursive.ByteString
+      System.Posix.Recursive
   other-modules:
       Paths_unix_recursive
   hs-source-dirs:
