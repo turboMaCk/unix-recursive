@@ -4,5 +4,5 @@ Blazingly fast functions for recursive file system operations.
 
 
 ```
-$ stack run -- path-to-directory
+$ stack run unix-recursive-bin -- ${path-to-directory}
 ```

@@ -64,7 +64,7 @@ test-suite unix-recursive-test
   main-is: Spec.hs
   other-modules:
       Paths_unix_recursive
-      Spec.ByteString
+      Spec.Listing
   hs-source-dirs:
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
