@@ -27,16 +27,13 @@ cat <<EOF
 **=***=====-''''--'''-+==========+---''''''''   ' '-+=*##= ' ''-+=====***======
 #* -U *****==-''-'''''-===*****======+++++----''''+=***===  ''' ' '++==*==++-++
 #*******==++---'-'''''' '-==*###**===========+----=*##*='  ' ' '  ''''+========
+
 EOF
-
-echo -e "\n"
-
 
 php gen/Recursive.php > System/Posix/Recursive.hs
 php gen/Recursive.ByteString.php > System/Posix/Recursive/ByteString.hs
 
-echo "PHP: I'm your father"
-echo "Haskell: NOOOOOOOOOOOOOOO!!!!"
+echo "PHP: I'm your father."
 
-echo "Formatting files"
-fourmolu -i $(find System test -name "*.hs" -not -path "test/workdir/**/*")
+echo -e "\nFormatting files..."
+fourmolu -i $(find System test -name "*.hs" 2> /dev/null)
