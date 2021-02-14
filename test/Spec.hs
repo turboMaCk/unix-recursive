@@ -5,13 +5,13 @@
 import Data.List (sort)
 
 import Spec.Listing
-import Test.Hspec (hspec, context)
+import Test.Hspec (context, hspec)
 
 import System.Posix.ByteString.FilePath (RawFilePath)
 
 import qualified Data.ByteString as BS
-import qualified System.Posix.Recursive.ByteString as ByteString
 import qualified System.Posix.Recursive as String
+import qualified System.Posix.Recursive.ByteString as ByteString
 
 
 -- Helper
@@ -62,4 +62,4 @@ main :: IO ()
 main =
     hspec $ do
         context "FilePath (String) API" $ spec isSuffixOf
-        context "Rawfilepath (ByteString) API" $ spec BS.isSuffixOf
+        context "RawFilePath (ByteString) API" $ spec BS.isSuffixOf

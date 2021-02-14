@@ -37,3 +37,6 @@ php gen/Recursive.ByteString.php > System/Posix/Recursive/ByteString.hs
 
 echo "PHP: I'm your father"
 echo "Haskell: NOOOOOOOOOOOOOOO!!!!"
+
+echo "Formatting files"
+fourmolu -i $(find System test -name "*.hs" -not -path "test/workdir/**/*")

@@ -8,9 +8,8 @@ module Spec.Listing (spec, DirectoryListing (..)) where
 import Data.List (sort)
 import Data.String
 import System.Posix.Files (FileStatus)
-import Test.Hspec
-
 import qualified System.Posix.Files as Posix
+import Test.Hspec
 
 
 class (Show a, Ord a, IsString a) => DirectoryListing a where

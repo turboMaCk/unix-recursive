@@ -3,8 +3,8 @@
 
 module Main where
 
-import System.Environment
 import qualified Data.ByteString.UTF8 as BS
+import System.Environment
 import qualified System.Posix.Recursive.ByteString as Lib
 
 

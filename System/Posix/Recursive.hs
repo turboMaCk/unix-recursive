@@ -19,6 +19,7 @@ import System.Posix.Files (FileStatus)
 import qualified System.Posix.Directory as Posix
 import qualified System.Posix.Files as Posix
 
+
 listAll' :: Bool -> (FilePath -> Bool) -> ([FilePath] -> [FilePath]) -> [FilePath] -> IO [FilePath]
 listAll' _ _ acc [] = pure $ acc []
 listAll' followSymlinks predicate acc (path : rest) =
