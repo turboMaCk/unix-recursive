@@ -24,8 +24,7 @@ library
       System.Posix.Recursive
   other-modules:
       Paths_unix_recursive
-  hs-source-dirs:
-      src
+  hs-source-dirs: .
   build-depends:
       base >=4.7 && <5
     , unix

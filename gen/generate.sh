@@ -32,8 +32,8 @@ EOF
 echo -e "\n"
 
 
-php gen/Recursive.php > src/System/Posix/Recursive.hs
-php gen/Recursive.ByteString.php > src/System/Posix/Recursive/ByteString.hs
+php gen/Recursive.php > System/Posix/Recursive.hs
+php gen/Recursive.ByteString.php > System/Posix/Recursive/ByteString.hs
 
 echo "PHP: I'm your father"
 echo "Haskell: NOOOOOOOOOOOOOOO!!!!"

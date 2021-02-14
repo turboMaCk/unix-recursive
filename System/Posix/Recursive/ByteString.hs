@@ -14,13 +14,13 @@ module System.Posix.Recursive.ByteString (
 
 import Control.Exception (bracket, handle)
 import System.IO.Error (IOError)
-import System.Posix.ByteString.FilePath (RawFilePath)
-import System.Posix.Files.ByteString (FileStatus)
+import System.Posix.Files (FileStatus)
 
+import System.Posix.ByteString.FilePath (RawFilePath)
 import qualified Data.ByteString as BS
+
 import qualified System.Posix.Directory.ByteString as Posix
 import qualified System.Posix.Files.ByteString as Posix
-
 
 listAll' :: Bool -> (RawFilePath -> Bool) -> ([RawFilePath] -> [RawFilePath]) -> [RawFilePath] -> IO [RawFilePath]
 listAll' _ _ acc [] = pure $ acc []
