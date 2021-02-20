@@ -1,15 +1,19 @@
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 import Data.List (sort)
 
 import Spec.Listing
-import Test.Hspec (context, hspec)
+import Test.Hspec --(anyException, context, hspec, it, shouldThrow)
 
+import System.IO.Error (isPermissionError)
 import System.Posix.ByteString.FilePath (RawFilePath)
 
 import qualified Data.ByteString as BS
 import qualified System.Posix.Recursive as String
 import qualified System.Posix.Recursive.ByteString as ByteString
+import qualified System.Posix.Recursive.ByteString.Unsafe as UnsafeBS
+import qualified System.Posix.Recursive.Unsafe as Unsafe
 
 
 -- Helper
@@ -59,5 +63,20 @@ instance DirectoryListing RawFilePath where
 main :: IO ()
 main =
     hspec $ do
-        context "FilePath (String) API" $ spec isSuffixOf
-        context "RawFilePath (ByteString) API" $ spec BS.isSuffixOf
+        context "System.Posix.Recursive" $ spec isSuffixOf
+
+        context "System.Posix.Recursive.Unsafe" $
+            it "should throw" $ do
+                let exp = do
+                        res <- Unsafe.listEverything "test/workdir"
+                        print $ length res
+                exp `shouldThrow` isPermissionError
+
+        context "System.Posix.Recursive.ByteString" $ spec BS.isSuffixOf
+
+        context "System.Posix.Recursive.ByteString.Unsafe" $
+            it "should throw" $ do
+                let exp = do
+                        res <- UnsafeBS.listEverything "test/workdir"
+                        print $ length res
+                exp `shouldThrow` isPermissionError

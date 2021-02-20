@@ -32,6 +32,8 @@ EOF
 
 php gen/Recursive.php > System/Posix/Recursive.hs
 php gen/Recursive.ByteString.php > System/Posix/Recursive/ByteString.hs
+php gen/Recursive.ByteString.Unsafe.php > System/Posix/Recursive/ByteString/Unsafe.hs
+php gen/Recursive.Unsafe.php > System/Posix/Recursive/Unsafe.hs
 
 echo "PHP: I'm your father."
 

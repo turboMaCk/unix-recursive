@@ -13,13 +13,13 @@ Tests were performed on relatively modern consumer grade HW with relatively mode
 All done on binaries compiled with optimization that are listing the same directory
 with 1,705,184 items.
 
-### [this lib] Unix Recursive `RawFilePath` (ByteString)
+### [this lib] Unix Recursive `RawFilePath`/ByteString
 
 ![](docs/unix-recursive-bytestring.png)
 
 - [source](bin/unix-recursive-bytestring.hs)
 
-### [this lib] Unix Recursive `FilePath` (String)
+### [this lib] Unix Recursive `FilePath`/String
 
 ![](docs/unix-recursive-string.png)
 
@@ -32,7 +32,7 @@ with 1,705,184 items.
 - [source](bin/dir-traverse.hs)
 - [lib](https://hackage.haskell.org/package/dir-traverse)
 
-### [alternative] Dirstream (`Filesystem.Path` is the only option)
+### [alternative] Dirstream (`Filesystem.Path`/ByteString is the only option)
 
 ![](docs/dirstream.png)
 

@@ -1,8 +1,8 @@
 <?
-$module_name = "System.Posix.Recursive";
+$module_name = "System.Posix.Recursive.ByteString.Unsafe";
 $file_path_type = "FilePath";
 $check_empty_fc = "null";
-$safe = true;
+$safe = false;
 
 $imports = <<<HS
     import qualified System.Posix.Directory as Posix

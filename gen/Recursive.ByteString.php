@@ -2,6 +2,7 @@
 $module_name = "System.Posix.Recursive.ByteString";
 $file_path_type = "RawFilePath";
 $check_empty_fc = "BS.null";
+$safe = true;
 
 $imports = <<<HS
     import System.Posix.ByteString.FilePath (RawFilePath)

@@ -23,8 +23,10 @@ Flag bin
   manual: True
 
 library
-    exposed-modules: System.Posix.Recursive.ByteString
-                   , System.Posix.Recursive
+    exposed-modules: System.Posix.Recursive
+                   , System.Posix.Recursive.Unsafe
+                   , System.Posix.Recursive.ByteString
+                   , System.Posix.Recursive.ByteString.Unsafe
     other-modules: Paths_unix_recursive
     hs-source-dirs: .
     build-depends: base >=4.7 && <5
