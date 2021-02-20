@@ -3,3 +3,6 @@
 
 # Test files that need to be created by script
 /test/workdir
+
+# output of measurements script
+/measurements

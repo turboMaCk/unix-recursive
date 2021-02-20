@@ -13,71 +13,79 @@ module <? echo $module_name ?> (
 ) where
 
 import Control.Exception (bracket, handle)
+import Data.Foldable (fold)
 import System.IO.Error (IOError)
+import System.IO.Unsafe (unsafeInterleaveIO)
 import System.Posix.Files (FileStatus)
 
 <? echo $imports ?>
 
-listAll' :: Bool -> (<? echo $file_path_type ?> -> Bool) -> ([<? echo $file_path_type ?>] -> [<? echo $file_path_type ?>]) -> [<? echo $file_path_type ?>] -> IO [<? echo $file_path_type ?>]
-listAll' _ _ acc [] = pure $ acc []
-listAll' followSymlinks predicate acc (path : rest) =
-    handle (\(_ :: IOError) -> listAll' followSymlinks predicate acc rest) $ do
+
+foldMapA  :: (Monoid b, Traversable t, Applicative f) => (a -> f b) -> t a -> f b
+foldMapA = (fmap fold .) . traverse
+
+
+{-# INLINE listDir #-}
+listDir :: (<? echo $file_path_type ?> -> Bool) -> <? echo $file_path_type ?> -> IO [<? echo $file_path_type ?>]
+listDir predicate path =
+    bracket
+        (Posix.openDirStream path)
+        Posix.closeDirStream
+        (go [])
+  where
+    go :: [<? echo $file_path_type ?>] -> Posix.DirStream -> IO [<? echo $file_path_type ?>]
+    go acc dirp = do
+        e <- Posix.readDirStream dirp
+        if <? echo $check_empty_fc ?> e
+            then pure acc
+            else
+                if e /= "." && e /= ".."
+                    then
+                        let fullPath = path <> "/" <> e
+                         in if predicate fullPath
+                                then go (fullPath : acc) dirp
+                                else go acc dirp
+                    else go acc dirp
+
+
+{-# INLINE listAll' #-}
+listAll' :: Bool -> (<? echo $file_path_type ?> -> Bool) -> <? echo $file_path_type ?> -> IO [<? echo $file_path_type ?>]
+listAll' followSymlinks predicate path =
+    handle (\(_ :: IOError) -> pure []) $ do
         file <- getFileStatus path
         if Posix.isDirectory file
-            then do
-                (newRest, newAcc) <-
-                    bracket
-                        (Posix.openDirStream path)
-                        Posix.closeDirStream
-                        start
-                listAll' followSymlinks predicate newAcc newRest
-            else listAll' followSymlinks predicate acc rest
+           then do
+               content <- listDir predicate path
+
+               next <- unsafeInterleaveIO $ foldMapA (listAll' followSymlinks predicate) content
+               pure $ content ++ next
+           else
+               pure []
   where
     {-# INLINE getFileStatus #-}
     getFileStatus
         | followSymlinks = Posix.getFileStatus
         | otherwise = Posix.getSymbolicLinkStatus
 
-    {-# INLINE start #-}
-    start dirp = go acc rest
-      where
-        go :: ([<? echo $file_path_type ?>] -> [<? echo $file_path_type ?>]) -> [<? echo $file_path_type ?>] -> IO ([<? echo $file_path_type ?>], [<? echo $file_path_type ?>] -> [<? echo $file_path_type ?>])
-        go acc current = do
-            e <- Posix.readDirStream dirp
-            if <? echo $check_empty_fc ?> e
-                then pure (current, acc)
-                else
-                    if e /= "." && e /= ".."
-                        then
-                            let fullPath = path <> "/" <> e
-                             in if predicate fullPath
-                                    then go (acc . (fullPath :)) (fullPath : current)
-                                    else go acc current
-                        else go acc current
-
 
 listAll :: (<? echo $file_path_type ?> -> Bool) -> <? echo $file_path_type ?> -> IO [<? echo $file_path_type ?>]
-listAll pred path =
-    listAll' False pred (path :) [path]
-{-# INLINE listAll #-}
+listAll =
+    listAll' False
 
 
 followListAll :: (<? echo $file_path_type ?> -> Bool) -> <? echo $file_path_type ?> -> IO [<? echo $file_path_type ?>]
-followListAll pred path =
-    listAll' True pred (path :) [path]
-{-# INLINE followListAll #-}
+followListAll =
+    listAll' True
 
 
 listEverything :: <? echo $file_path_type ?> -> IO [<? echo $file_path_type ?>]
 listEverything =
-    listAll (const True)
-{-# INLINE listEverything #-}
+    listAll' False (const True)
 
 
 followListEverything :: <? echo $file_path_type ?> -> IO [<? echo $file_path_type ?>]
 followListEverything =
-    followListAll (const True)
-{-# INLINE followListEverything #-}
+    listAll' True (const True)
 
 
 data Conf = Conf
@@ -96,73 +104,48 @@ defConf =
         }
 
 
-listAccessible' :: Conf -> ([<? echo $file_path_type ?>] -> [<? echo $file_path_type ?>]) -> [<? echo $file_path_type ?>] -> IO [<? echo $file_path_type ?>]
-listAccessible' _ acc [] = pure $ acc []
-listAccessible' Conf{..} acc (path : rest) =
-    handle (\(_ :: IOError) -> listAccessible' Conf{..} acc rest) $ do
+{-# INLINE listAccessible' #-}
+listAccessible' :: Conf -> <? echo $file_path_type ?> -> IO [<? echo $file_path_type ?>]
+listAccessible' Conf{..} path =
+    handle (\(_ :: IOError) -> pure []) $ do
         file <- getFileStatus path
-        let newAcc =
-                if postCheck file path
-                    then acc . (path :)
-                    else acc
-        if Posix.isDirectory file
-            then do
-                newRest <-
-                    bracket
-                        (Posix.openDirStream path)
-                        Posix.closeDirStream
-                        start
-                listAccessible' Conf{..} newAcc newRest
-            else listAccessible' Conf{..} newAcc rest
+        next <-
+            if Posix.isDirectory file
+                then do
+                    content <- listDir preCheck path
+                    unsafeInterleaveIO $ foldMapA (listAccessible' Conf{..}) content
+                else pure []
+
+        if postCheck file path
+            then pure $ path : next
+            else pure next
   where
     {-# INLINE getFileStatus #-}
     getFileStatus
         | followSymlinks = Posix.getFileStatus
         | otherwise = Posix.getSymbolicLinkStatus
 
-    {-# INLINE start #-}
-    start dirp = go rest
-      where
-        go :: [<? echo $file_path_type ?>] -> IO [<? echo $file_path_type ?>]
-        go acc = do
-            e <- Posix.readDirStream dirp
-            if <? echo $check_empty_fc ?> e
-                then pure acc
-                else
-                    if e /= "." && e /= ".."
-                        then
-                            let fullPath = path <> "/" <> e
-                             in if preCheck fullPath
-                                    then go (fullPath : acc)
-                                    else go acc
-                        else go acc
-
 
 listAccessible :: Conf -> <? echo $file_path_type ?> -> IO [<? echo $file_path_type ?>]
-listAccessible conf path =
-    listAccessible' conf id [path]
-{-# INLINE listAccessible #-}
+listAccessible =
+    listAccessible'
 
 
 listEverythingAccessible :: <? echo $file_path_type ?> -> IO [<? echo $file_path_type ?>]
 listEverythingAccessible =
-    listAccessible defConf
-{-# INLINE listEverythingAccessible #-}
+    listAccessible' defConf
 
 
 listDirectories :: <? echo $file_path_type ?> -> IO [<? echo $file_path_type ?>]
 listDirectories =
-    listAccessible defConf{postCheck = \file _ -> Posix.isDirectory file}
-{-# INLINE listDirectories #-}
+    listAccessible' defConf{postCheck = \file _ -> Posix.isDirectory file}
 
 
 listRegularFiles :: <? echo $file_path_type ?> -> IO [<? echo $file_path_type ?>]
 listRegularFiles =
-    listAccessible defConf{postCheck = \file _ -> Posix.isRegularFile file}
-{-# INLINE listRegularFiles #-}
+    listAccessible' defConf{postCheck = \file _ -> Posix.isRegularFile file}
 
 
 listSymbolicLinks :: <? echo $file_path_type ?> -> IO [<? echo $file_path_type ?>]
 listSymbolicLinks =
-    listAccessible defConf{postCheck = \file _ -> Posix.isSymbolicLink file}
-{-# INLINE listSymbolicLinks #-}
+    listAccessible' defConf{postCheck = \file _ -> Posix.isSymbolicLink file}

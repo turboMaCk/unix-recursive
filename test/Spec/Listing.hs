@@ -29,205 +29,210 @@ spec filter = do
         describe "listEverything" $ do
             it "returns expected list of everything in workdir" $ do
                 res :: [a] <- listEverything "test/workdir"
-                sort res
-                    `shouldBe` [ "test/workdir"
-                               , "test/workdir/dir1"
-                               , "test/workdir/dir1/roots-dir1"
-                               , "test/workdir/dir1/roots-dir1/roots-file1"
-                               , "test/workdir/dir1/sub1"
-                               , "test/workdir/dir1/sub1/file1"
-                               , "test/workdir/dir1/sub1/file2"
-                               , "test/workdir/dir1/sub2"
-                               , "test/workdir/dir1/sub2/file1"
-                               , "test/workdir/dir1/sub2/file2"
-                               , "test/workdir/dir1/sub2/file3"
-                               , "test/workdir/dir1/sub2/roots-file1"
-                               , "test/workdir/dir2"
-                               , "test/workdir/dir2/file1"
-                               , "test/workdir/dir2/sym1"
-                               , "test/workdir/dir2/sym2"
-                               , "test/workdir/dir3"
-                               , "test/workdir/dir3/sub1"
-                               , "test/workdir/dir3/sub1/file1"
-                               , "test/workdir/dir3/sub2"
-                               , "test/workdir/dir3/sub2/broken-sym1"
-                               , "test/workdir/file1"
-                               , "test/workdir/file2"
-                               , "test/workdir/only-roots-dir1"
-                               ]
+                let expected =
+                        [ "test/workdir/dir1"
+                        , "test/workdir/dir1/roots-dir1"
+                        , "test/workdir/dir1/roots-dir1/roots-file1"
+                        , "test/workdir/dir1/sub1"
+                        , "test/workdir/dir1/sub1/file1"
+                        , "test/workdir/dir1/sub1/file2"
+                        , "test/workdir/dir1/sub2"
+                        , "test/workdir/dir1/sub2/file1"
+                        , "test/workdir/dir1/sub2/file2"
+                        , "test/workdir/dir1/sub2/file3"
+                        , "test/workdir/dir1/sub2/roots-file1"
+                        , "test/workdir/dir2"
+                        , "test/workdir/dir2/file1"
+                        , "test/workdir/dir2/sym1"
+                        , "test/workdir/dir2/sym2"
+                        , "test/workdir/dir3"
+                        , "test/workdir/dir3/sub1"
+                        , "test/workdir/dir3/sub1/file1"
+                        , "test/workdir/dir3/sub2"
+                        , "test/workdir/dir3/sub2/broken-sym1"
+                        , "test/workdir/file1"
+                        , "test/workdir/file2"
+                        , "test/workdir/only-roots-dir1"
+                        ]
+                res `shouldMatchList` expected
 
         describe "listAll" $ do
             it "returns list excluding files & dirs ending with `3`" $ do
                 res :: [a] <- listAll (not . filter "3") "test/workdir"
-                sort res
-                    `shouldBe` [ "test/workdir"
-                               , "test/workdir/dir1"
-                               , "test/workdir/dir1/roots-dir1"
-                               , "test/workdir/dir1/roots-dir1/roots-file1"
-                               , "test/workdir/dir1/sub1"
-                               , "test/workdir/dir1/sub1/file1"
-                               , "test/workdir/dir1/sub1/file2"
-                               , "test/workdir/dir1/sub2"
-                               , "test/workdir/dir1/sub2/file1"
-                               , "test/workdir/dir1/sub2/file2"
-                               , "test/workdir/dir1/sub2/roots-file1"
-                               , "test/workdir/dir2"
-                               , "test/workdir/dir2/file1"
-                               , "test/workdir/dir2/sym1"
-                               , "test/workdir/dir2/sym2"
-                               , "test/workdir/file1"
-                               , "test/workdir/file2"
-                               , "test/workdir/only-roots-dir1"
-                               ]
+                let expected =
+                        [ "test/workdir/dir1"
+                        , "test/workdir/dir1/roots-dir1"
+                        , "test/workdir/dir1/roots-dir1/roots-file1"
+                        , "test/workdir/dir1/sub1"
+                        , "test/workdir/dir1/sub1/file1"
+                        , "test/workdir/dir1/sub1/file2"
+                        , "test/workdir/dir1/sub2"
+                        , "test/workdir/dir1/sub2/file1"
+                        , "test/workdir/dir1/sub2/file2"
+                        , "test/workdir/dir1/sub2/roots-file1"
+                        , "test/workdir/dir2"
+                        , "test/workdir/dir2/file1"
+                        , "test/workdir/dir2/sym1"
+                        , "test/workdir/dir2/sym2"
+                        , "test/workdir/file1"
+                        , "test/workdir/file2"
+                        , "test/workdir/only-roots-dir1"
+                        ]
+                res `shouldMatchList` expected
 
         describe "listEverythingAccessible" $ do
             it "returns everything that is accessible in workdir" $ do
                 res :: [a] <- listEverythingAccessible "test/workdir"
-                sort res
-                    `shouldBe` [ "test/workdir"
-                               , "test/workdir/dir1"
-                               , "test/workdir/dir1/roots-dir1"
-                               , "test/workdir/dir1/roots-dir1/roots-file1"
-                               , "test/workdir/dir1/sub1"
-                               , "test/workdir/dir1/sub1/file1"
-                               , "test/workdir/dir1/sub1/file2"
-                               , "test/workdir/dir1/sub2"
-                               , "test/workdir/dir1/sub2/file1"
-                               , "test/workdir/dir1/sub2/file2"
-                               , "test/workdir/dir1/sub2/file3"
-                               , "test/workdir/dir1/sub2/roots-file1"
-                               , "test/workdir/dir2"
-                               , "test/workdir/dir2/file1"
-                               , "test/workdir/dir2/sym1"
-                               , "test/workdir/dir2/sym2"
-                               , "test/workdir/dir3"
-                               , "test/workdir/dir3/sub1"
-                               , "test/workdir/dir3/sub1/file1"
-                               , "test/workdir/dir3/sub2"
-                               , "test/workdir/dir3/sub2/broken-sym1"
-                               , "test/workdir/file1"
-                               , "test/workdir/file2"
-                               ]
+                let expected =
+                        [ "test/workdir"
+                        , "test/workdir/dir1"
+                        , "test/workdir/dir1/roots-dir1"
+                        , "test/workdir/dir1/roots-dir1/roots-file1"
+                        , "test/workdir/dir1/sub1"
+                        , "test/workdir/dir1/sub1/file1"
+                        , "test/workdir/dir1/sub1/file2"
+                        , "test/workdir/dir1/sub2"
+                        , "test/workdir/dir1/sub2/file1"
+                        , "test/workdir/dir1/sub2/file2"
+                        , "test/workdir/dir1/sub2/file3"
+                        , "test/workdir/dir1/sub2/roots-file1"
+                        , "test/workdir/dir2"
+                        , "test/workdir/dir2/file1"
+                        , "test/workdir/dir2/sym1"
+                        , "test/workdir/dir2/sym2"
+                        , "test/workdir/dir3"
+                        , "test/workdir/dir3/sub1"
+                        , "test/workdir/dir3/sub1/file1"
+                        , "test/workdir/dir3/sub2"
+                        , "test/workdir/dir3/sub2/broken-sym1"
+                        , "test/workdir/file1"
+                        , "test/workdir/file2"
+                        ]
+                res `shouldMatchList` expected
 
         describe "listDirectories" $ do
             it "returns only directories" $ do
                 res :: [a] <- listDirectories "test/workdir"
-                sort res
-                    `shouldBe` [ "test/workdir"
-                               , "test/workdir/dir1"
-                               , "test/workdir/dir1/roots-dir1"
-                               , "test/workdir/dir1/sub1"
-                               , "test/workdir/dir1/sub2"
-                               , "test/workdir/dir2"
-                               , "test/workdir/dir3"
-                               , "test/workdir/dir3/sub1"
-                               , "test/workdir/dir3/sub2"
-                               ]
+                let expected =
+                        [ "test/workdir"
+                        , "test/workdir/dir1"
+                        , "test/workdir/dir1/roots-dir1"
+                        , "test/workdir/dir1/sub1"
+                        , "test/workdir/dir1/sub2"
+                        , "test/workdir/dir2"
+                        , "test/workdir/dir3"
+                        , "test/workdir/dir3/sub1"
+                        , "test/workdir/dir3/sub2"
+                        ]
+                res `shouldMatchList` expected
 
         describe "listFiles" $ do
             it "returns only files" $ do
                 res :: [a] <- listRegularFiles "test/workdir"
-                sort res
-                    `shouldBe` [ "test/workdir/dir1/roots-dir1/roots-file1"
-                               , "test/workdir/dir1/sub1/file1"
-                               , "test/workdir/dir1/sub1/file2"
-                               , "test/workdir/dir1/sub2/file1"
-                               , "test/workdir/dir1/sub2/file2"
-                               , "test/workdir/dir1/sub2/file3"
-                               , "test/workdir/dir1/sub2/roots-file1"
-                               , "test/workdir/dir2/file1"
-                               , "test/workdir/dir3/sub1/file1"
-                               , "test/workdir/file1"
-                               , "test/workdir/file2"
-                               ]
+                let expected =
+                        [ "test/workdir/dir1/roots-dir1/roots-file1"
+                        , "test/workdir/dir1/sub1/file1"
+                        , "test/workdir/dir1/sub1/file2"
+                        , "test/workdir/dir1/sub2/file1"
+                        , "test/workdir/dir1/sub2/file2"
+                        , "test/workdir/dir1/sub2/file3"
+                        , "test/workdir/dir1/sub2/roots-file1"
+                        , "test/workdir/dir2/file1"
+                        , "test/workdir/dir3/sub1/file1"
+                        , "test/workdir/file1"
+                        , "test/workdir/file2"
+                        ]
+                res `shouldMatchList` expected
 
         describe "listSymbolicLinks" $ do
             it "returns only symlinks" $ do
                 res :: [a] <- listSymbolicLinks "test/workdir"
-                sort res
-                    `shouldBe` [ "test/workdir/dir2/sym1"
-                               , "test/workdir/dir2/sym2"
-                               , "test/workdir/dir3/sub2/broken-sym1"
-                               ]
+                let expected =
+                        [ "test/workdir/dir2/sym1"
+                        , "test/workdir/dir2/sym2"
+                        , "test/workdir/dir3/sub2/broken-sym1"
+                        ]
+                res `shouldMatchList` expected
 
-    describe "listAccessible" $ do
-        it "return everything except for symlinks and not within dir1" $ do
-            res :: [a] <-
-                listAccessible
-                    (not . filter "dir1")
-                    (\file _ -> not (Posix.isSymbolicLink file))
-                    "test/workdir"
-            sort res
-                `shouldBe` [ "test/workdir"
-                           , "test/workdir/dir2"
-                           , "test/workdir/dir2/file1"
-                           , "test/workdir/dir3"
-                           , "test/workdir/dir3/sub1"
-                           , "test/workdir/dir3/sub1/file1"
-                           , "test/workdir/dir3/sub2"
-                           , "test/workdir/file1"
-                           , "test/workdir/file2"
-                           ]
+        describe "listAccessible" $ do
+            it "return everything except for symlinks and not within dir1" $ do
+                res :: [a] <-
+                    listAccessible
+                        (not . filter "dir1")
+                        (\file _ -> not (Posix.isSymbolicLink file))
+                        "test/workdir"
+                let expected =
+                        [ "test/workdir"
+                        , "test/workdir/dir2"
+                        , "test/workdir/dir2/file1"
+                        , "test/workdir/dir3"
+                        , "test/workdir/dir3/sub1"
+                        , "test/workdir/dir3/sub1/file1"
+                        , "test/workdir/dir3/sub2"
+                        , "test/workdir/file1"
+                        , "test/workdir/file2"
+                        ]
+                res `shouldMatchList` expected
 
     context "Following symlinks" $ do
         describe "followListEverything" $ do
             it "returns expected list of everything in workdir" $ do
                 res :: [a] <- followListEverything "test/workdir"
-                sort res
-                    `shouldBe` [ "test/workdir"
-                               , "test/workdir/dir1"
-                               , "test/workdir/dir1/roots-dir1"
-                               , "test/workdir/dir1/roots-dir1/roots-file1"
-                               , "test/workdir/dir1/sub1"
-                               , "test/workdir/dir1/sub1/file1"
-                               , "test/workdir/dir1/sub1/file2"
-                               , "test/workdir/dir1/sub2"
-                               , "test/workdir/dir1/sub2/file1"
-                               , "test/workdir/dir1/sub2/file2"
-                               , "test/workdir/dir1/sub2/file3"
-                               , "test/workdir/dir1/sub2/roots-file1"
-                               , "test/workdir/dir2"
-                               , "test/workdir/dir2/file1"
-                               , "test/workdir/dir2/sym1"
-                               , "test/workdir/dir2/sym2"
-                               , "test/workdir/dir2/sym2/sub1"
-                               , "test/workdir/dir2/sym2/sub1/file1"
-                               , "test/workdir/dir2/sym2/sub2"
-                               , "test/workdir/dir2/sym2/sub2/broken-sym1"
-                               , "test/workdir/dir3"
-                               , "test/workdir/dir3/sub1"
-                               , "test/workdir/dir3/sub1/file1"
-                               , "test/workdir/dir3/sub2"
-                               , "test/workdir/dir3/sub2/broken-sym1"
-                               , "test/workdir/file1"
-                               , "test/workdir/file2"
-                               , "test/workdir/only-roots-dir1"
-                               ]
+                let expected =
+                        [ "test/workdir/dir1"
+                        , "test/workdir/dir1/roots-dir1"
+                        , "test/workdir/dir1/roots-dir1/roots-file1"
+                        , "test/workdir/dir1/sub1"
+                        , "test/workdir/dir1/sub1/file1"
+                        , "test/workdir/dir1/sub1/file2"
+                        , "test/workdir/dir1/sub2"
+                        , "test/workdir/dir1/sub2/file1"
+                        , "test/workdir/dir1/sub2/file2"
+                        , "test/workdir/dir1/sub2/file3"
+                        , "test/workdir/dir1/sub2/roots-file1"
+                        , "test/workdir/dir2"
+                        , "test/workdir/dir2/file1"
+                        , "test/workdir/dir2/sym1"
+                        , "test/workdir/dir2/sym2"
+                        , "test/workdir/dir2/sym2/sub1"
+                        , "test/workdir/dir2/sym2/sub1/file1"
+                        , "test/workdir/dir2/sym2/sub2"
+                        , "test/workdir/dir2/sym2/sub2/broken-sym1"
+                        , "test/workdir/dir3"
+                        , "test/workdir/dir3/sub1"
+                        , "test/workdir/dir3/sub1/file1"
+                        , "test/workdir/dir3/sub2"
+                        , "test/workdir/dir3/sub2/broken-sym1"
+                        , "test/workdir/file1"
+                        , "test/workdir/file2"
+                        , "test/workdir/only-roots-dir1"
+                        ]
+                res `shouldMatchList` expected
 
         describe "followListAll" $ do
             it "returns list excluding files & dirs ending with `3`" $ do
                 res <- followListAll (not . filter "3") "test/workdir"
-                sort res
-                    `shouldBe` [ "test/workdir"
-                               , "test/workdir/dir1"
-                               , "test/workdir/dir1/roots-dir1"
-                               , "test/workdir/dir1/roots-dir1/roots-file1"
-                               , "test/workdir/dir1/sub1"
-                               , "test/workdir/dir1/sub1/file1"
-                               , "test/workdir/dir1/sub1/file2"
-                               , "test/workdir/dir1/sub2"
-                               , "test/workdir/dir1/sub2/file1"
-                               , "test/workdir/dir1/sub2/file2"
-                               , "test/workdir/dir1/sub2/roots-file1"
-                               , "test/workdir/dir2"
-                               , "test/workdir/dir2/file1"
-                               , "test/workdir/dir2/sym1"
-                               , "test/workdir/dir2/sym2"
-                               , "test/workdir/dir2/sym2/sub1"
-                               , "test/workdir/dir2/sym2/sub1/file1"
-                               , "test/workdir/dir2/sym2/sub2"
-                               , "test/workdir/dir2/sym2/sub2/broken-sym1"
-                               , "test/workdir/file1"
-                               , "test/workdir/file2"
-                               , "test/workdir/only-roots-dir1"
-                               ]
+                let expected =
+                        [ "test/workdir/dir1"
+                        , "test/workdir/dir1/roots-dir1"
+                        , "test/workdir/dir1/roots-dir1/roots-file1"
+                        , "test/workdir/dir1/sub1"
+                        , "test/workdir/dir1/sub1/file1"
+                        , "test/workdir/dir1/sub1/file2"
+                        , "test/workdir/dir1/sub2"
+                        , "test/workdir/dir1/sub2/file1"
+                        , "test/workdir/dir1/sub2/file2"
+                        , "test/workdir/dir1/sub2/roots-file1"
+                        , "test/workdir/dir2"
+                        , "test/workdir/dir2/file1"
+                        , "test/workdir/dir2/sym1"
+                        , "test/workdir/dir2/sym2"
+                        , "test/workdir/dir2/sym2/sub1"
+                        , "test/workdir/dir2/sym2/sub1/file1"
+                        , "test/workdir/dir2/sym2/sub2"
+                        , "test/workdir/dir2/sym2/sub2/broken-sym1"
+                        , "test/workdir/file1"
+                        , "test/workdir/file2"
+                        , "test/workdir/only-roots-dir1"
+                        ]
+                res `shouldMatchList` expected
