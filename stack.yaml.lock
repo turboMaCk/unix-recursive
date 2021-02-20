@@ -11,6 +11,13 @@ packages:
       sha256: b19f0562746dfd0f8f21eccab6584592f55fb781ca3e043da9132cc23d8a5b99
   original:
     hackage: dir-traverse-0.2.3.0@sha256:adcc128f201ff95131b15ffe41365dc99c50dc3fa3a910f021521dc734013bfa,2137
+- completed:
+    hackage: dirstream-1.1.0@sha256:cb420081b510b4c25be4a39499b9ca0ff33dd9827ddd650f1e3fdaea85107405,1428
+    pantry-tree:
+      size: 215
+      sha256: d01291b74c249dfe1e9cdb73eb1edb8220d25a56eb56a15d6fc159b36438ae38
+  original:
+    hackage: dirstream-1.1.0@sha256:cb420081b510b4c25be4a39499b9ca0ff33dd9827ddd650f1e3fdaea85107405,1428
 snapshots:
 - completed:
     size: 563099

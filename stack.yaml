@@ -42,6 +42,7 @@ packages:
 #
 extra-deps:
   - dir-traverse-0.2.3.0@sha256:adcc128f201ff95131b15ffe41365dc99c50dc3fa3a910f021521dc734013bfa,2137
+  - dirstream-1.1.0@sha256:cb420081b510b4c25be4a39499b9ca0ff33dd9827ddd650f1e3fdaea85107405,1428
 
 # Override default flag values for local packages and extra-deps
 # flags: {}
