@@ -1,7 +1,7 @@
 module Main where
 
 import System.Directory.Recursive as Lib
-import System.Environment
+import System.Environment (getArgs)
 
 
 main :: IO ()

@@ -1,8 +1,7 @@
 module Main where
 
 import qualified Data.ByteString.UTF8 as BS
-import System.Environment
-import qualified System.Posix.Files as Posix
+import System.Environment (getArgs)
 import qualified System.Posix.Recursive.ByteString as Lib
 
 

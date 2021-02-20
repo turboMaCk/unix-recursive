@@ -1,7 +1,6 @@
 module Main where
 
-import System.Environment
-import qualified System.Posix.Files as Posix
+import System.Environment (getArgs)
 import qualified System.Posix.Recursive as Lib
 
 
