@@ -16,7 +16,7 @@ class (Show a, Ord a, IsString a) => DirectoryListing a where
     followListAll :: (a -> Bool) -> a -> IO [a]
     listEverything :: a -> IO [a]
     followListEverything :: a -> IO [a]
-    listAccessible :: (a -> Bool) -> (FileStatus -> a -> IO Bool) -> a -> IO [a]
+    listCustom :: (a -> Bool) -> (FileStatus -> a -> IO Bool) -> a -> IO [a]
     listDirectories :: a -> IO [a]
     listRegularFiles :: a -> IO [a]
     listEverythingAccessible :: a -> IO [a]
@@ -156,10 +156,10 @@ spec filter = do
                         ]
                 res `shouldMatchList` expected
 
-        describe "listAccessible" $ do
+        describe "listCustom" $ do
             it "return everything except for symlinks and not within dir1" $ do
                 res :: [a] <-
-                    listAccessible
+                    listCustom
                         (not . filter "dir1")
                         (\file _ -> pure $ not $ Posix.isSymbolicLink file)
                         "test/workdir"

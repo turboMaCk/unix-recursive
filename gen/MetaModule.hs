@@ -5,7 +5,7 @@ module <? echo $module_name ?> (
     followListAll,
     listEverything,
     followListEverything,
-    listAccessible,
+    listCustom,
     <? if ($safe) { ?>
     listEverythingAccessible,
     <? } ?>
@@ -145,8 +145,8 @@ listAccessible' Conf{..} path =
         | otherwise = Posix.getSymbolicLinkStatus
 
 
-listAccessible :: Conf -> <? echo $file_path_type ?> -> IO [<? echo $file_path_type ?>]
-listAccessible =
+listCustom :: Conf -> <? echo $file_path_type ?> -> IO [<? echo $file_path_type ?>]
+listCustom =
     listAccessible'
 
 

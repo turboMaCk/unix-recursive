@@ -31,8 +31,8 @@ instance DirectoryListing FilePath where
     followListAll = String.followListAll
     listEverything = String.listEverything
     followListEverything = String.followListEverything
-    listAccessible filterPath includeFile =
-        String.listAccessible
+    listCustom filterPath includeFile =
+        String.listCustom
             String.defConf
                 { String.filterPath = filterPath
                 , String.includeFile = includeFile
@@ -48,8 +48,8 @@ instance DirectoryListing RawFilePath where
     followListAll = ByteString.followListAll
     listEverything = ByteString.listEverything
     followListEverything = ByteString.followListEverything
-    listAccessible filterPath includeFile =
-        ByteString.listAccessible
+    listCustom filterPath includeFile =
+        ByteString.listCustom
             ByteString.defConf
                 { ByteString.filterPath = filterPath
                 , ByteString.includeFile = includeFile

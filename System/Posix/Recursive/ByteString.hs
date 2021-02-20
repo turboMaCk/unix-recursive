@@ -5,7 +5,7 @@ module System.Posix.Recursive.ByteString (
     followListAll,
     listEverything,
     followListEverything,
-    listAccessible,
+    listCustom,
     listEverythingAccessible,
     listDirectories,
     listRegularFiles,
@@ -142,8 +142,8 @@ listAccessible' Conf{..} path =
         | otherwise = Posix.getSymbolicLinkStatus
 
 
-listAccessible :: Conf -> RawFilePath -> IO [RawFilePath]
-listAccessible =
+listCustom :: Conf -> RawFilePath -> IO [RawFilePath]
+listCustom =
     listAccessible'
 
 

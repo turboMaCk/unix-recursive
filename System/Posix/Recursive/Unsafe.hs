@@ -5,7 +5,7 @@ module System.Posix.Recursive.Unsafe (
     followListAll,
     listEverything,
     followListEverything,
-    listAccessible,
+    listCustom,
     listDirectories,
     listRegularFiles,
     listSymbolicLinks,
@@ -123,8 +123,8 @@ listAccessible' Conf{..} path =
         | otherwise = Posix.getSymbolicLinkStatus
 
 
-listAccessible :: Conf -> FilePath -> IO [FilePath]
-listAccessible =
+listCustom :: Conf -> FilePath -> IO [FilePath]
+listCustom =
     listAccessible'
 
 
