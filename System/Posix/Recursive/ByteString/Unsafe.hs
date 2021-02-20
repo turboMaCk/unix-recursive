@@ -17,8 +17,13 @@ import System.IO.Error (IOError)
 import System.IO.Unsafe (unsafeInterleaveIO)
 import System.Posix.Files (FileStatus)
 
-import qualified System.Posix.Directory as Posix
-import qualified System.Posix.Files as Posix
+import qualified Data.ByteString as BS
+import System.Posix.ByteString.FilePath (RawFilePath)
+
+import qualified System.Posix.Directory.ByteString as Posix
+import qualified System.Posix.Files.ByteString as Posix
+
+import System.Posix.Recursive.ByteString (Conf (..), defConf)
 
 
 -- Helpers
@@ -28,17 +33,17 @@ foldMapA = (fmap fold .) . traverse
 
 
 {-# INLINE listDir #-}
-listDir :: (FilePath -> Bool) -> FilePath -> IO [FilePath]
+listDir :: (RawFilePath -> Bool) -> RawFilePath -> IO [RawFilePath]
 listDir predicate path =
     bracket
         (Posix.openDirStream path)
         Posix.closeDirStream
         (go [])
   where
-    go :: [FilePath] -> Posix.DirStream -> IO [FilePath]
+    go :: [RawFilePath] -> Posix.DirStream -> IO [RawFilePath]
     go acc dirp = do
         e <- Posix.readDirStream dirp
-        if null e
+        if BS.null e
             then pure acc
             else
                 if e /= "." && e /= ".."
@@ -53,7 +58,7 @@ listDir predicate path =
 -- List all (filtering based on path)
 
 {-# INLINE listAll' #-}
-listAll' :: Bool -> (FilePath -> Bool) -> FilePath -> IO [FilePath]
+listAll' :: Bool -> (RawFilePath -> Bool) -> RawFilePath -> IO [RawFilePath]
 listAll' followSymlinks predicate path =
     do
         file <- getFileStatus path
@@ -72,51 +77,35 @@ listAll' followSymlinks predicate path =
 
 
 {-# INLINE listAll'' #-}
-listAll'' :: Bool -> (FilePath -> Bool) -> FilePath -> IO [FilePath]
+listAll'' :: Bool -> (RawFilePath -> Bool) -> RawFilePath -> IO [RawFilePath]
 listAll'' followSymlinks predicate path =
     (path :) <$> listAll' followSymlinks predicate path
 
 
-listAll :: (FilePath -> Bool) -> FilePath -> IO [FilePath]
+listAll :: (RawFilePath -> Bool) -> RawFilePath -> IO [RawFilePath]
 listAll =
     listAll'' False
 
 
-followListAll :: (FilePath -> Bool) -> FilePath -> IO [FilePath]
+followListAll :: (RawFilePath -> Bool) -> RawFilePath -> IO [RawFilePath]
 followListAll =
     listAll'' True
 
 
-listEverything :: FilePath -> IO [FilePath]
+listEverything :: RawFilePath -> IO [RawFilePath]
 listEverything =
     listAll'' False (const True)
 
 
-followListEverything :: FilePath -> IO [FilePath]
+followListEverything :: RawFilePath -> IO [RawFilePath]
 followListEverything =
     listAll'' True (const True)
 
 
 -- List accessible (filtering based on both path as well as file status)
 
-data Conf = Conf
-    { filterPath :: !(FilePath -> Bool)
-    , includeFile :: !(FileStatus -> FilePath -> IO Bool)
-    , followSymlinks :: !Bool
-    }
-
-
-defConf :: Conf
-defConf =
-    Conf
-        { filterPath = const True
-        , includeFile = \_ _ -> pure True
-        , followSymlinks = False
-        }
-
-
 {-# INLINE listAccessible' #-}
-listAccessible' :: Conf -> FilePath -> IO [FilePath]
+listAccessible' :: Conf -> RawFilePath -> IO [RawFilePath]
 listAccessible' Conf{..} path =
     do
         file <- getFileStatus path
@@ -138,21 +127,21 @@ listAccessible' Conf{..} path =
         | otherwise = Posix.getSymbolicLinkStatus
 
 
-listAccessible :: Conf -> FilePath -> IO [FilePath]
+listAccessible :: Conf -> RawFilePath -> IO [RawFilePath]
 listAccessible =
     listAccessible'
 
 
-listDirectories :: FilePath -> IO [FilePath]
+listDirectories :: RawFilePath -> IO [RawFilePath]
 listDirectories =
     listAccessible' defConf{includeFile = \file _ -> pure $ Posix.isDirectory file}
 
 
-listRegularFiles :: FilePath -> IO [FilePath]
+listRegularFiles :: RawFilePath -> IO [RawFilePath]
 listRegularFiles =
     listAccessible' defConf{includeFile = \file _ -> pure $ Posix.isRegularFile file}
 
 
-listSymbolicLinks :: FilePath -> IO [FilePath]
+listSymbolicLinks :: RawFilePath -> IO [RawFilePath]
 listSymbolicLinks =
     listAccessible' defConf{includeFile = \file _ -> pure $ Posix.isSymbolicLink file}

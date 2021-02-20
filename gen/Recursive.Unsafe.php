@@ -5,6 +5,7 @@ $check_empty_fc = "null";
 $safe = false;
 
 $imports = <<<HS
+    import System.Posix.Recursive (Conf(..), defConf)
     import qualified System.Posix.Directory as Posix
     import qualified System.Posix.Files as Posix
 

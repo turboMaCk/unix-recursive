@@ -19,6 +19,7 @@ import System.Posix.Files (FileStatus)
 
 import qualified System.Posix.Directory as Posix
 import qualified System.Posix.Files as Posix
+import System.Posix.Recursive (Conf (..), defConf)
 
 
 -- Helpers
@@ -98,22 +99,6 @@ followListEverything =
 
 
 -- List accessible (filtering based on both path as well as file status)
-
-data Conf = Conf
-    { filterPath :: !(FilePath -> Bool)
-    , includeFile :: !(FileStatus -> FilePath -> IO Bool)
-    , followSymlinks :: !Bool
-    }
-
-
-defConf :: Conf
-defConf =
-    Conf
-        { filterPath = const True
-        , includeFile = \_ _ -> pure True
-        , followSymlinks = False
-        }
-
 
 {-# INLINE listAccessible' #-}
 listAccessible' :: Conf -> FilePath -> IO [FilePath]

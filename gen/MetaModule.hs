@@ -104,6 +104,7 @@ followListEverything =
 -- List accessible (filtering based on both path as well as file status)
 
 
+<? if ($safe) { ?>
 data Conf = Conf
     { filterPath :: !(<? echo $file_path_type ?> -> Bool)
     , includeFile :: !(FileStatus -> <? echo $file_path_type ?> -> IO Bool)
@@ -118,6 +119,7 @@ defConf =
         , includeFile = \_ _ -> pure True
         , followSymlinks = False
         }
+<? } ?>
 
 
 {-# INLINE listAccessible' #-}
