@@ -6,9 +6,9 @@ module <? echo $module_name ?> (
     listEverything,
     followListEverything,
     listAccessible,
+    listEverythingAccessible,
     listDirectories,
     listRegularFiles,
-    listEverythingAccessible,
     listSymbolicLinks,
 ) where
 
@@ -20,6 +20,8 @@ import System.Posix.Files (FileStatus)
 
 <? echo $imports ?>
 
+
+-- Helpers
 
 foldMapA  :: (Monoid b, Traversable t, Applicative f) => (a -> f b) -> t a -> f b
 foldMapA = (fmap fold .) . traverse
@@ -48,6 +50,9 @@ listDir predicate path =
                     else go acc dirp
 
 
+-- List all (filtering based on path)
+
+
 {-# INLINE listAll' #-}
 listAll' :: Bool -> (<? echo $file_path_type ?> -> Bool) -> <? echo $file_path_type ?> -> IO [<? echo $file_path_type ?>]
 listAll' followSymlinks predicate path =
@@ -68,29 +73,38 @@ listAll' followSymlinks predicate path =
         | otherwise = Posix.getSymbolicLinkStatus
 
 
+{-# INLINE listAll'' #-}
+listAll'' :: Bool -> (<? echo $file_path_type ?> -> Bool) -> <? echo $file_path_type ?> -> IO [<? echo $file_path_type ?>]
+listAll'' followSymlinks predicate path =
+    (path :) <$> listAll' followSymlinks predicate path
+
+
 listAll :: (<? echo $file_path_type ?> -> Bool) -> <? echo $file_path_type ?> -> IO [<? echo $file_path_type ?>]
 listAll =
-    listAll' False
+    listAll'' False
 
 
 followListAll :: (<? echo $file_path_type ?> -> Bool) -> <? echo $file_path_type ?> -> IO [<? echo $file_path_type ?>]
 followListAll =
-    listAll' True
+    listAll'' True
 
 
 listEverything :: <? echo $file_path_type ?> -> IO [<? echo $file_path_type ?>]
 listEverything =
-    listAll' False (const True)
+    listAll'' False (const True)
 
 
 followListEverything :: <? echo $file_path_type ?> -> IO [<? echo $file_path_type ?>]
 followListEverything =
-    listAll' True (const True)
+    listAll'' True (const True)
+
+
+-- List accessible (filtering based on both path as well as file status)
 
 
 data Conf = Conf
-    { preCheck :: !(<? echo $file_path_type ?> -> Bool)
-    , postCheck :: !(FileStatus -> <? echo $file_path_type ?> -> Bool)
+    { filterPath :: !(<? echo $file_path_type ?> -> Bool)
+    , includeFile :: !(FileStatus -> <? echo $file_path_type ?> -> IO Bool)
     , followSymlinks :: !Bool
     }
 
@@ -98,8 +112,8 @@ data Conf = Conf
 defConf :: Conf
 defConf =
     Conf
-        { preCheck = const True
-        , postCheck = \_ _ -> True
+        { filterPath = const True
+        , includeFile = \_ _ -> pure True
         , followSymlinks = False
         }
 
@@ -112,11 +126,12 @@ listAccessible' Conf{..} path =
         next <-
             if Posix.isDirectory file
                 then do
-                    content <- listDir preCheck path
+                    content <- listDir filterPath path
                     unsafeInterleaveIO $ foldMapA (listAccessible' Conf{..}) content
                 else pure []
 
-        if postCheck file path
+        include <- includeFile file path
+        if include
             then pure $ path : next
             else pure next
   where
@@ -138,14 +153,14 @@ listEverythingAccessible =
 
 listDirectories :: <? echo $file_path_type ?> -> IO [<? echo $file_path_type ?>]
 listDirectories =
-    listAccessible' defConf{postCheck = \file _ -> Posix.isDirectory file}
+    listAccessible' defConf{includeFile = \file _ -> pure $ Posix.isDirectory file}
 
 
 listRegularFiles :: <? echo $file_path_type ?> -> IO [<? echo $file_path_type ?>]
 listRegularFiles =
-    listAccessible' defConf{postCheck = \file _ -> Posix.isRegularFile file}
+    listAccessible' defConf{includeFile = \file _ -> pure $ Posix.isRegularFile file}
 
 
 listSymbolicLinks :: <? echo $file_path_type ?> -> IO [<? echo $file_path_type ?>]
 listSymbolicLinks =
-    listAccessible' defConf{postCheck = \file _ -> Posix.isSymbolicLink file}
+    listAccessible' defConf{includeFile = \file _ -> pure $ Posix.isSymbolicLink file}

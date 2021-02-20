@@ -27,11 +27,11 @@ instance DirectoryListing FilePath where
     followListAll = String.followListAll
     listEverything = String.listEverything
     followListEverything = String.followListEverything
-    listAccessible preCheck postCheck =
+    listAccessible filterPath includeFile =
         String.listAccessible
             String.defConf
-                { String.preCheck = preCheck
-                , String.postCheck = postCheck
+                { String.filterPath = filterPath
+                , String.includeFile = includeFile
                 }
     listDirectories = String.listDirectories
     listRegularFiles = String.listRegularFiles
@@ -44,11 +44,11 @@ instance DirectoryListing RawFilePath where
     followListAll = ByteString.followListAll
     listEverything = ByteString.listEverything
     followListEverything = ByteString.followListEverything
-    listAccessible preCheck postCheck =
+    listAccessible filterPath includeFile =
         ByteString.listAccessible
             ByteString.defConf
-                { ByteString.preCheck = preCheck
-                , ByteString.postCheck = postCheck
+                { ByteString.filterPath = filterPath
+                , ByteString.includeFile = includeFile
                 }
     listDirectories = ByteString.listDirectories
     listRegularFiles = ByteString.listRegularFiles

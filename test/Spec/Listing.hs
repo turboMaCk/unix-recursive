@@ -16,7 +16,7 @@ class (Show a, Ord a, IsString a) => DirectoryListing a where
     followListAll :: (a -> Bool) -> a -> IO [a]
     listEverything :: a -> IO [a]
     followListEverything :: a -> IO [a]
-    listAccessible :: (a -> Bool) -> (FileStatus -> a -> Bool) -> a -> IO [a]
+    listAccessible :: (a -> Bool) -> (FileStatus -> a -> IO Bool) -> a -> IO [a]
     listDirectories :: a -> IO [a]
     listRegularFiles :: a -> IO [a]
     listEverythingAccessible :: a -> IO [a]
@@ -30,7 +30,8 @@ spec filter = do
             it "returns expected list of everything in workdir" $ do
                 res :: [a] <- listEverything "test/workdir"
                 let expected =
-                        [ "test/workdir/dir1"
+                        [ "test/workdir"
+                        , "test/workdir/dir1"
                         , "test/workdir/dir1/roots-dir1"
                         , "test/workdir/dir1/roots-dir1/roots-file1"
                         , "test/workdir/dir1/sub1"
@@ -60,7 +61,8 @@ spec filter = do
             it "returns list excluding files & dirs ending with `3`" $ do
                 res :: [a] <- listAll (not . filter "3") "test/workdir"
                 let expected =
-                        [ "test/workdir/dir1"
+                        [ "test/workdir"
+                        , "test/workdir/dir1"
                         , "test/workdir/dir1/roots-dir1"
                         , "test/workdir/dir1/roots-dir1/roots-file1"
                         , "test/workdir/dir1/sub1"
@@ -159,7 +161,7 @@ spec filter = do
                 res :: [a] <-
                     listAccessible
                         (not . filter "dir1")
-                        (\file _ -> not (Posix.isSymbolicLink file))
+                        (\file _ -> pure $ not $ Posix.isSymbolicLink file)
                         "test/workdir"
                 let expected =
                         [ "test/workdir"
@@ -179,7 +181,8 @@ spec filter = do
             it "returns expected list of everything in workdir" $ do
                 res :: [a] <- followListEverything "test/workdir"
                 let expected =
-                        [ "test/workdir/dir1"
+                        [ "test/workdir"
+                        , "test/workdir/dir1"
                         , "test/workdir/dir1/roots-dir1"
                         , "test/workdir/dir1/roots-dir1/roots-file1"
                         , "test/workdir/dir1/sub1"
@@ -213,7 +216,8 @@ spec filter = do
             it "returns list excluding files & dirs ending with `3`" $ do
                 res <- followListAll (not . filter "3") "test/workdir"
                 let expected =
-                        [ "test/workdir/dir1"
+                        [ "test/workdir"
+                        , "test/workdir/dir1"
                         , "test/workdir/dir1/roots-dir1"
                         , "test/workdir/dir1/roots-dir1/roots-file1"
                         , "test/workdir/dir1/sub1"
