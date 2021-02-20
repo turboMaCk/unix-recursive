@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 mkdir -p measurements/
-DUR=60
+DUR=300
 DATE=$(date +%s)
 DIR=$1
 
