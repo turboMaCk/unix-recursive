@@ -1,6 +1,6 @@
 # Unix Recursive
 
-![build](https://github.com/turboMaCk/unix-recursive/workflows/Build/badge.svg?branch=master&event=push)
+![build](https://github.com/turboMaCk/unix-recursive/workflows/Test/badge.svg?branch=master&event=push)
 
 Blazingly fast functions for recursive file system operations.
 Utilizing lazy IO for constant space & computation efficiant bindigns to Posix [`dirstream.h`](https://sourceware.org/git/?p=glibc.git;a=blob;f=sysdeps/unix/dirstream.h;h=8303f07fab6f6efaa39e51411ef924e712d995e0;hb=fa39685d5c7df2502213418bead44e9543a9b9ec) api.
