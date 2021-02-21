@@ -27,37 +27,37 @@ isSuffixOf needle haystack
 
 
 instance DirectoryListing FilePath where
-    listAll = String.listAll
-    followListAll = String.followListAll
-    listEverything = String.listEverything
-    followListEverything = String.followListEverything
+    list = String.list
+    followList = String.followList
+    listMatching = String.listMatching
+    followListMatching = String.followListMatching
+    listAccessible = String.listAccessible
+    listDirectories = String.listDirectories
+    listRegularFiles = String.listRegularFiles
+    listSymbolicLinks = String.listSymbolicLinks
     listCustom filterPath includeFile =
         String.listCustom
             String.defConf
                 { String.filterPath = filterPath
                 , String.includeFile = includeFile
                 }
-    listDirectories = String.listDirectories
-    listRegularFiles = String.listRegularFiles
-    listEverythingAccessible = String.listEverythingAccessible
-    listSymbolicLinks = String.listSymbolicLinks
 
 
 instance DirectoryListing RawFilePath where
-    listAll = ByteString.listAll
-    followListAll = ByteString.followListAll
-    listEverything = ByteString.listEverything
-    followListEverything = ByteString.followListEverything
+    list = ByteString.list
+    followList = ByteString.followList
+    listMatching = ByteString.listMatching
+    followListMatching = ByteString.followListMatching
+    listDirectories = ByteString.listDirectories
+    listAccessible = ByteString.listAccessible
+    listRegularFiles = ByteString.listRegularFiles
+    listSymbolicLinks = ByteString.listSymbolicLinks
     listCustom filterPath includeFile =
         ByteString.listCustom
             ByteString.defConf
                 { ByteString.filterPath = filterPath
                 , ByteString.includeFile = includeFile
                 }
-    listDirectories = ByteString.listDirectories
-    listRegularFiles = ByteString.listRegularFiles
-    listEverythingAccessible = ByteString.listEverythingAccessible
-    listSymbolicLinks = ByteString.listSymbolicLinks
 
 
 main :: IO ()
@@ -68,7 +68,7 @@ main =
         context "System.Posix.Recursive.Unsafe" $
             it "should throw" $ do
                 let exp = do
-                        res <- Unsafe.listEverything "test/workdir"
+                        res <- Unsafe.list "test/workdir"
                         print $ length res
                 exp `shouldThrow` isPermissionError
 
@@ -77,6 +77,6 @@ main =
         context "System.Posix.Recursive.ByteString.Unsafe" $
             it "should throw" $ do
                 let exp = do
-                        res <- UnsafeBS.listEverything "test/workdir"
+                        res <- UnsafeBS.list "test/workdir"
                         print $ length res
                 exp `shouldThrow` isPermissionError

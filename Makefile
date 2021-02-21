@@ -1,6 +1,9 @@
 System/Posix/**/*.hs: gen/*.*
 	./gen/generate.sh
 
+.PHONY: generate
+generate: System/Posix/**/*.hs
+
 .PHONY: bin
 bin: System/Posix/**/*.hs bin/*.hs
 	stack build --flag unix-recursive:bin
@@ -19,3 +22,7 @@ clean-test-workdir:
 .PHONY: bench
 bench: System/Posix/**/*.hs bin/*.hs bench/*.hs
 	stack bench
+
+.PHONY: docs
+docs: System/Posix/**/*.hs
+	stack haddock

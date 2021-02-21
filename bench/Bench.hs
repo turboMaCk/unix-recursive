@@ -16,31 +16,27 @@ main =
             "compare different api groups"
             [ bgroup
                 "ByteString"
-                [ bench "filtering base on path" $ nfIO $ ByteString.listEverything "."
-                , bench "filter by path and file status" $ nfIO $ ByteString.listEverythingAccessible "."
+                [ bench "filtering base on path" $ nfIO $ ByteString.list "."
+                , bench "filter by path and file status" $ nfIO $ ByteString.listAccessible "."
                 ]
             , bgroup
                 "String"
-                [ bench "filtering base on path" $ nfIO $ String.listEverything "."
-                , bench "filter by path and file status" $ nfIO $ String.listEverythingAccessible "."
+                [ bench "filtering base on path" $ nfIO $ String.list "."
+                , bench "filter by path and file status" $ nfIO $ String.listAccessible "."
                 ]
             ]
         , bgroup
             "compare with dir traverse"
             [ bgroup
                 "Evaluate whole list"
-                [ bench "unix-recursive String" $ nfIO $ String.listEverything "."
-                , bench "unix-recursive String dirs only" $ nfIO $ String.listDirectories "."
-                , bench "unix-recursive ByteString" $ nfIO $ ByteString.listEverything "."
-                , bench "unix-recursive ByteString dirs only" $ nfIO $ ByteString.listDirectories "."
+                [ bench "unix-recursive String" $ nfIO $ String.followList "."
+                , bench "unix-recursive ByteString" $ nfIO $ ByteString.followList "."
                 , bench "dir-traverse" $ nfIO $ DirTraverse.getDirRecursive "."
                 ]
             , bgroup
                 "Test laziness"
-                [ bench "unix-recursive String" $ nfIO (head . tail <$> String.listEverything ".")
-                , bench "unix-recursive String dirs only" $ nfIO (head . tail <$> String.listDirectories ".")
-                , bench "unix-recursive ByteString" $ nfIO (head . tail <$> ByteString.listEverything ".")
-                , bench "unix-recursive ByteString dirs only" $ nfIO (head . tail <$> ByteString.listDirectories ".")
+                [ bench "unix-recursive String" $ nfIO (head . tail <$> String.followList ".")
+                , bench "unix-recursive ByteString" $ nfIO (head . tail <$> ByteString.followList ".")
                 , bench "dir-traverse" $ nfIO ((head . tail) <$> DirTraverse.getDirRecursive ".")
                 ]
             ]

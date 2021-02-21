@@ -7,5 +7,5 @@ import qualified System.Posix.Recursive as Lib
 main :: IO ()
 main = do
     [path] <- getArgs
-    all <- Lib.followListEverything path
+    all <- Lib.followList path
     print $ length all

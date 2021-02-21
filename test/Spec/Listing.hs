@@ -12,15 +12,15 @@ import Test.Hspec
 
 
 class (Show a, Ord a, IsString a) => DirectoryListing a where
-    listAll :: (a -> Bool) -> a -> IO [a]
-    followListAll :: (a -> Bool) -> a -> IO [a]
-    listEverything :: a -> IO [a]
-    followListEverything :: a -> IO [a]
-    listCustom :: (a -> Bool) -> (FileStatus -> a -> IO Bool) -> a -> IO [a]
+    list :: a -> IO [a]
+    followList :: a -> IO [a]
+    listMatching :: (a -> Bool) -> a -> IO [a]
+    followListMatching :: (a -> Bool) -> a -> IO [a]
+    listAccessible :: a -> IO [a]
     listDirectories :: a -> IO [a]
     listRegularFiles :: a -> IO [a]
-    listEverythingAccessible :: a -> IO [a]
     listSymbolicLinks :: a -> IO [a]
+    listCustom :: (a -> Bool) -> (FileStatus -> a -> IO Bool) -> a -> IO [a]
 
 
 spec :: forall a. DirectoryListing a => (a -> a -> Bool) -> Spec
@@ -28,7 +28,7 @@ spec filter = do
     context "Not following symlinks" $ do
         describe "listEverything" $ do
             it "returns expected list of everything in workdir" $ do
-                res :: [a] <- listEverything "test/workdir"
+                res :: [a] <- list "test/workdir"
                 let expected =
                         [ "test/workdir"
                         , "test/workdir/dir1"
@@ -59,7 +59,7 @@ spec filter = do
 
         describe "listAll" $ do
             it "returns list excluding files & dirs ending with `3`" $ do
-                res :: [a] <- listAll (not . filter "3") "test/workdir"
+                res :: [a] <- listMatching (not . filter "3") "test/workdir"
                 let expected =
                         [ "test/workdir"
                         , "test/workdir/dir1"
@@ -84,7 +84,7 @@ spec filter = do
 
         describe "listEverythingAccessible" $ do
             it "returns everything that is accessible in workdir" $ do
-                res :: [a] <- listEverythingAccessible "test/workdir"
+                res :: [a] <- listAccessible "test/workdir"
                 let expected =
                         [ "test/workdir"
                         , "test/workdir/dir1"
@@ -179,7 +179,7 @@ spec filter = do
     context "Following symlinks" $ do
         describe "followListEverything" $ do
             it "returns expected list of everything in workdir" $ do
-                res :: [a] <- followListEverything "test/workdir"
+                res :: [a] <- followList "test/workdir"
                 let expected =
                         [ "test/workdir"
                         , "test/workdir/dir1"
@@ -214,7 +214,7 @@ spec filter = do
 
         describe "followListAll" $ do
             it "returns list excluding files & dirs ending with `3`" $ do
-                res <- followListAll (not . filter "3") "test/workdir"
+                res <- followListMatching (not . filter "3") "test/workdir"
                 let expected =
                         [ "test/workdir"
                         , "test/workdir/dir1"
