@@ -1,3 +1,5 @@
-# Changelog for watch-fs-hs
+# Changelog for unix-recursive
 
-## Unreleased changes
+## 0.1.0.0 -- 2021-02-21
+
+Initial version
