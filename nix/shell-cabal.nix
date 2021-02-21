@@ -1,2 +1,6 @@
 with (import ./default.nix);
-(haskell.lib.doBenchmark haskellPackages.unix-recursive).env
+mkShell {
+  name = "unix-recursive-cabal-shell";
+  buildInputs = [ stack php psrecord fourmolu ];
+  inputsFrom = [ (haskell.lib.doBenchmark haskellPackages.unix-recursive).env ];
+}
