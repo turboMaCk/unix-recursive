@@ -6,3 +6,5 @@
 
 # output of measurements script
 /measurements
+/result*
+/dist-newstyle/
