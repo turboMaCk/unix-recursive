@@ -16,6 +16,6 @@ test: System/Posix/**/*.hs test/workdir
 clean-test-workdir:
 	$(RM) -r test/workdir
 
+.PHONY: bench
 bench: System/Posix/**/*.hs bin/*.hs bench/*.hs
-bench:
 	stack bench
