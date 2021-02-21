@@ -1,2 +1,2 @@
 with (import ./nix/default.nix);
-haskellPackages.unix-recursive
+haskell.lib.dontCheck haskellPackages.unix-recursive

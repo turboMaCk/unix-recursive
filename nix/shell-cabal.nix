@@ -1,1 +1,2 @@
-(import ./default.nix).haskellPackages.unix-recursive.env
+with (import ./default.nix);
+(haskell.lib.doBenchmark haskellPackages.unix-recursive).env

@@ -4,7 +4,7 @@ let
       haskellPackages =
         pkgs.haskellPackages.override {
             overrides = self: super: {
-              unix-recursive = pkgs.haskell.lib.dontCheck (self.callCabal2nix "unix-recursive" ../. {});
+              unix-recursive = self.callCabal2nix "unix-recursive" ../. {};
             };
         };
     };
