@@ -1,3 +1,5 @@
+USE=stack
+
 System/Posix/**/*.hs: gen/*.*
 	./gen/generate.sh
 
@@ -13,7 +15,7 @@ test/workdir:
 
 .PHONY: test
 test: System/Posix/**/*.hs test/workdir
-	stack test
+	$(USE) test
 
 .PHONY: clean-test-workdir
 clean-test-workdir:
@@ -21,8 +23,8 @@ clean-test-workdir:
 
 .PHONY: bench
 bench: System/Posix/**/*.hs bin/*.hs bench/*.hs
-	stack bench
+	$(USE) bench
 
 .PHONY: docs
 docs: System/Posix/**/*.hs
-	stack haddock
+	$(USE) haddock
