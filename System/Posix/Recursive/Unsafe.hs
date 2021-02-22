@@ -6,8 +6,9 @@
 
  All modules profided by @unix-recursive@ expose similar API.
  Make sure you're using the module wich best fits your needs based on:
-   - Working  with 'RawFilePath' (faster and more packed) or 'FilePath' (slower but easier to work with safely)
-   - Exception free (Default) or @Unsafe@ variants of functions
+
+ * Working  with 'RawFilePath' (faster and more packed) or 'FilePath' (slower but easier to work with safely)
+ * Exception free (Default) or @Unsafe@ variants of functions
 
  = Usage
 

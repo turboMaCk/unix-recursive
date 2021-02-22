@@ -5,7 +5,7 @@ version:             0.1.0.0
 synopsis:            Fast and flexible primitives for recursive file system IO on Posix systems
 description:
     Blazingly fast functions for recursive file system operations.
-    Utilizing lazy IO for constant space & computation efficiant bindigns to Posix dirstream.h api.
+    Utilizing lazy IO for constant space & computation efficiant bindigns to Posix dirstream api.
 
 bug-reports:         https://github.com/turboMaCk/unix-recursive/issues
 license:             BSD3
@@ -18,6 +18,7 @@ category:            System, Filesystem
 build-type:          Simple
 extra-source-files:  README.md
                    , ChangeLog.md
+                   , docs/*.png
 homepage:            https://github.com/turboMaCk/unix-recursive
 
 source-repository head
