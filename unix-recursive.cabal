@@ -1,7 +1,7 @@
 cabal-version:       >=1.12
 
 name:                unix-recursive
-version:             0.1.0.0
+version:             0.1.0.1
 synopsis:            Fast and flexible primitives for recursive file system IO on Posix systems
 description:
     Blazingly fast functions for recursive file system operations.
