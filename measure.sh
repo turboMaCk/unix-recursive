@@ -21,3 +21,4 @@ measure unix-recursive-bytestring
 measure unix-recursive-string
 measure dir-traverse
 measure dirstream
+measure fsnotify-style

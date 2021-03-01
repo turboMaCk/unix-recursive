@@ -9,5 +9,5 @@ main :: IO ()
 main = do
     [path'] <- getArgs
     let path = BS.fromString path'
-    all <- Lib.followList path
-    print $ length all
+    all' <- Lib.followList path
+    print $ length all'
